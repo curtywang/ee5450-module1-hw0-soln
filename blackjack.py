@@ -72,9 +72,8 @@ class Blackjack(object):
         """
         Creates the stack of the cards (52 * num_decks), shuffled.
 
-        :param self:
-        :param num_decks:
-        :return:
+        :param num_decks: number of decks to use
+        :return: stack of all card objects, shuffled.
         """
         the_list = []
         for _ in range(num_decks):
