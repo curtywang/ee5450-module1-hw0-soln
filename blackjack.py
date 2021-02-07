@@ -198,6 +198,8 @@ class Blackjack(object):
             return 'NONE'
         elif dealer_sum == self._WINNING_SUM:
             return 'DEALER'
+        elif self._WINNING_SUM > dealer_sum > player_sum:
+            return 'DEALER'
         elif player_sum > self._WINNING_SUM:
             return 'DEALER'
         elif player_sum == self._WINNING_SUM:
@@ -220,13 +222,13 @@ class Blackjack(object):
         print(f"Dealer: {self._dealer_stack[0]}")
 
     def print_dealer_full(self):
-        print(f"Dealer: {''.join([str(card) for card in self._dealer_stack])}"
+        print(f"Dealer: {', '.join([str(card) for card in self._dealer_stack])}",
               f" at sum {self._calculate_stack_sum(self._dealer_stack)}")
 
     def print_player_stack(self, player_idx: int):
         player_stack = self._player_stacks[player_idx]
         player_sum = self._calculate_stack_sum(player_stack)
-        print(f"Player {player_idx}: {''.join([str(card) for card in player_stack])} at sum {player_sum}")
+        print(f"Player {player_idx}: {', '.join([str(card) for card in player_stack])} at sum {player_sum}")
 
     def _initial_deal(self):
         self._dealer_draw()
@@ -248,6 +250,7 @@ class Blackjack(object):
             self._current_turn += 1
         while not self._dealer_draw():
             self.print_dealer_full()
+        self.print_dealer_full()
         print(f"Final winners: {self._compute_winners()}")
         return
 
