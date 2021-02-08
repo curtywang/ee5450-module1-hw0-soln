@@ -243,10 +243,11 @@ class Blackjack(object):
         self.print_dealer_single()
         while not all(self._player_dones):
             for player_idx in range(self._num_players):
-                if self._current_turn < 1:
+                if not self._player_dones[player_idx]:
+                    if self._current_turn < 1:
+                        self.print_player_stack(player_idx)
+                    self._player_dones[player_idx] = self._player_choice(player_idx)
                     self.print_player_stack(player_idx)
-                self._player_dones[player_idx] = self._player_choice(player_idx)
-                self.print_player_stack(player_idx)
             self._current_turn += 1
         while not self._dealer_draw():
             self.print_dealer_full()
