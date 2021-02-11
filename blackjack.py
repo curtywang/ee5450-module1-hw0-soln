@@ -130,7 +130,7 @@ class Blackjack(object):
         """
         return self._card_stack.pop()
 
-    def _dealer_draw(self, silent: bool = False) -> bool:
+    def dealer_draw(self, silent: bool = False) -> bool:
         """
         Play the dealer, which is forced to stay at 17.
 
@@ -148,7 +148,7 @@ class Blackjack(object):
             print(f"Dealer: {BLACKJACK_INSTRUCTIONS['English']['DEALER_STAY']} {current_sum}")
             return True
 
-    def _player_draw(self, player_idx: int) -> Card:
+    def player_draw(self, player_idx: int) -> Card:
         """
         Draw a card for the player.
 
@@ -170,7 +170,7 @@ class Blackjack(object):
         while player_input not in ('h', 's'):
             player_input = input(f"Player {player_idx}: {BLACKJACK_INSTRUCTIONS['English']['PLAYER_INST']} ")
             if player_input == 'h':
-                drawn_card = self._player_draw(player_idx)
+                drawn_card = self.player_draw(player_idx)
                 print(f"Player {player_idx}: {BLACKJACK_INSTRUCTIONS['English']['PLAYER_HIT']} {drawn_card}")
                 return self._calculate_stack_sum(self._player_stacks[player_idx]) > 21
             elif player_input == 's':
@@ -209,7 +209,7 @@ class Blackjack(object):
         else:
             return 'NONE'
 
-    def _compute_winners(self) -> List[str]:
+    def compute_winners(self) -> List[str]:
         """
         Computes the winners of the current game.
 
@@ -230,16 +230,19 @@ class Blackjack(object):
         player_sum = self._calculate_stack_sum(player_stack)
         print(f"Player {player_idx}: {', '.join([str(card) for card in player_stack])} at sum {player_sum}")
 
-    def _initial_deal(self):
-        self._dealer_draw()
-        self._dealer_draw(silent=True)  # second draw is hidden
+    def get_stacks(self):
+        return self._dealer_stack, self._player_stacks
+
+    def initial_deal(self):
+        self.dealer_draw()
+        self.dealer_draw(silent=True)  # second draw is hidden
         for player_idx in range(self._num_players):
             for _ in range(2):
-                self._player_draw(player_idx)
+                self.player_draw(player_idx)
 
     def run(self):
         print(BLACKJACK_INSTRUCTIONS['English']['START'])
-        self._initial_deal()
+        self.initial_deal()
         self.print_dealer_single()
         while not all(self._player_dones):
             for player_idx in range(self._num_players):
@@ -249,11 +252,15 @@ class Blackjack(object):
                     self._player_dones[player_idx] = self._player_choice(player_idx)
                     self.print_player_stack(player_idx)
             self._current_turn += 1
-        while not self._dealer_draw():
+        while not self.dealer_draw():
             self.print_dealer_full()
         self.print_dealer_full()
-        print(f"Final winners: {self._compute_winners()}")
+        print(f"Final winners: {self.compute_winners()}")
         return
+
+    @property
+    def num_players(self):
+        return self._num_players
 
 
 def main():
